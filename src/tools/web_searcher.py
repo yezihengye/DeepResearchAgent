@@ -9,7 +9,10 @@ from src.config import config
 from src.tools.search import (
     GoogleSearchEngine,
     WebSearchEngine,
-    SearchItem
+    SearchItem,
+    BaiduSearchEngine,
+    DuckDuckGoSearchEngine,
+    BingSearchEngine,
 )
 from src.tools import AsyncTool, ToolResult
 from src.logger import logger
@@ -17,6 +20,7 @@ from src.logger import logger
 _WEB_SEARCHER_DESCRIPTION = """Search the web for real-time information about any topic.
 This tool returns comprehensive search results with relevant information, URLs, titles, and descriptions.
 If the primary search engine fails, it automatically falls back to alternative engines."""
+
 
 class SearchResult(BaseModel):
     """Represents a single search result returned by a search engine."""
@@ -95,6 +99,7 @@ class SearchResponse(ToolResult):
         self.output = "\n".join(result_text)
         return self
 
+
 class WebSearcherTool(AsyncTool):
     """Search the web for information using various search engines."""
 
@@ -122,7 +127,10 @@ class WebSearcherTool(AsyncTool):
 
         self.searcher_config = config.web_search_tool
         self._search_engine: dict[str, WebSearchEngine] = {
-            "google": GoogleSearchEngine()
+            "google": GoogleSearchEngine(),
+            "baidu": BaiduSearchEngine(),
+            "DuckDuckGo": DuckDuckGoSearchEngine(),
+            "bing": BingSearchEngine(),
         }
         self.max_length: int = (
             getattr(self.searcher_config, "max_length", 20000)
@@ -165,9 +173,9 @@ class WebSearcherTool(AsyncTool):
         self.content_fetcher: WebFetcherTool = WebFetcherTool()
 
     async def forward(
-        self,
-        query: str,
-        filter_year: Optional[int] = None,
+            self,
+            query: str,
+            filter_year: Optional[int] = None,
     ) -> SearchResponse:
         """
         Execute a Web search and return detailed search results.
@@ -222,7 +230,7 @@ class WebSearcherTool(AsyncTool):
                 )
 
     async def _try_all_engines(
-        self, query: str, num_results: int, search_params: Dict[str, Any]
+            self, query: str, num_results: int, search_params: Dict[str, Any]
     ) -> List[SearchResult]:
         """Try all search engines in the configured order."""
         engine_order = self._get_engine_order()
@@ -249,7 +257,7 @@ class WebSearcherTool(AsyncTool):
                     position=i + 1,
                     url=item.url,
                     title=item.title
-                    or f"Result {i+1}",  # Ensure we always have a title
+                          or f"Result {i + 1}",  # Ensure we always have a title
                     description=item.description or "",
                     source=engine_name,
                 )
@@ -301,7 +309,7 @@ class WebSearcherTool(AsyncTool):
         fallbacks = (
             [engine.lower() for engine in self.searcher_config.fallback_engines]
             if self.searcher_config
-            and hasattr(self.searcher_config, "fallback_engines")
+               and hasattr(self.searcher_config, "fallback_engines")
             else []
         )
 
@@ -322,21 +330,21 @@ class WebSearcherTool(AsyncTool):
         stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10)
     )
     async def _perform_search_with_engine(
-        self,
-        engine: WebSearchEngine,
-        query: str,
-        num_results: int,
-        search_params: Dict[str, Any],
+            self,
+            engine: WebSearchEngine,
+            query: str,
+            num_results: int,
+            search_params: Dict[str, Any],
     ) -> List[SearchItem]:
         """Execute search with the given engine and parameters."""
 
         results = [result
-            for result in await engine.perform_search(
+                   for result in await engine.perform_search(
                 query,
                 num_results=num_results,
                 lang=search_params.get("lang"),
                 country=search_params.get("country"),
                 filter_year=search_params.get("filter_year"),
             )
-        ]
+                   ]
         return results

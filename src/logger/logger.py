@@ -18,11 +18,13 @@ from src.utils import (
 
 YELLOW_HEX = "#d4b702"
 
+
 class LogLevel(IntEnum):
     OFF = -1  # No output
     ERROR = 0  # Only errors
     INFO = 1  # Normal output (default)
     DEBUG = 2  # Detailed output
+
 
 class AgentLogger(logging.Logger, metaclass=Singleton):
     def __init__(self, name="logger", level=logging.INFO):
@@ -53,7 +55,7 @@ class AgentLogger(logging.Logger, metaclass=Singleton):
 
         # Add a file handler for logging to the file
         file_handler = logging.FileHandler(
-            log_path, mode="a"
+            log_path, mode="a", encoding="utf-8"
         )  # 'a' mode appends to the file
         file_handler.setLevel(level)
         file_handler.setFormatter(self.formatter)
@@ -169,7 +171,8 @@ class AgentLogger(logging.Logger, metaclass=Singleton):
         )
 
     def log_messages(self, messages: list[dict], level: LogLevel = LogLevel.DEBUG) -> None:
-        messages_as_string = "\n".join([json.dumps(dict(message), indent=4, ensure_ascii=False) for message in messages])
+        messages_as_string = "\n".join(
+            [json.dumps(dict(message), indent=4, ensure_ascii=False) for message in messages])
         self.info(
             Syntax(
                 messages_as_string,
@@ -222,5 +225,6 @@ class AgentLogger(logging.Logger, metaclass=Singleton):
             )
         build_agent_tree(main_tree, agent)
         self.console.print(main_tree)
+
 
 logger = AgentLogger()

@@ -29,7 +29,8 @@ async def main():
     agent = await create_agent()
 
     # Run example
-    task = "Use deep_researcher_agent to search the latest papers on the topic of 'AI Agent' and then summarize it."
+    # task = "Use deep_researcher_agent to search the latest papers on the topic of 'AI Agent' and then summarize it."
+    task = "使用deep_researcher_agent搜索近期苏州足球联赛的新闻，简单总结一下'苏超'非常火热的原因。"
     res = await agent.run(task)
     logger.info(f"Result: {res}")
 
