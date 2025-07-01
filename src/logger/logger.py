@@ -108,7 +108,10 @@ class AgentLogger(logging.Logger, metaclass=Singleton):
         super().debug(msg, *args, **kwargs)
 
     def log_error(self, error_message: str) -> None:
-        self.info(escape_code_brackets(error_message), style="bold red", level=LogLevel.ERROR)
+        # self.info(escape_code_brackets(error_message), style="bold red", level=LogLevel.ERROR)
+        # self.info(escape_code_brackets(error_message), style="#ff001c", level=LogLevel.ERROR)
+        # self.info(escape_code_brackets(error_message), level=LogLevel.ERROR)
+        self.info(escape_code_brackets(error_message))
 
     def log_markdown(self, content: str, title: str | None = None, level=LogLevel.INFO, style=YELLOW_HEX) -> None:
         markdown_content = Syntax(

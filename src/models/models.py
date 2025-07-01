@@ -495,6 +495,24 @@ class ModelManager(metaclass=Singleton):
 
             self.registed_models[model_name] = model
 
+
+            # qwen-plus-latest
+            model_name = "qwen-plus-latest"
+            model_id = "qwen-plus-latest"
+            client = AsyncOpenAI(
+                api_key=api_key,
+                base_url=self._check_local_api_base(local_api_base_name="SKYWORK_ALI_API_BASE",
+                                                    remote_api_base_name="ALI_API_BASE"),
+                http_client=ASYNC_HTTP_CLIENT,
+            )
+            model = OpenAIServerModel(
+                model_id=model_id,
+                http_client=client,
+                custom_role_conversions=custom_role_conversions,
+            )
+
+            self.registed_models[model_name] = model
+
         else:
             logger.info("Using remote API for Qwen models")
             api_key = self._check_local_api_key(local_api_key_name="ALI_API_KEY",

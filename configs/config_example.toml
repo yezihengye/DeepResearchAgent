@@ -23,9 +23,9 @@ fetch_content = false
 max_length = 50000
 
 [deep_researcher_tool]
-model_id = "ali_qwen2.5-32b-instruct"
+#model_id = "ali_qwen2.5-32b-instruct"
 #model_id = "qwen2.5-32b-instruct"
-#model_id = "gpt-4.1-mini"
+model_id = "gpt-4.1-mini"
 #model_id = "gpt-4.1"
 max_depth = 2
 max_insights = 20
@@ -51,8 +51,10 @@ username = "xxxx"
 password = "xxxx"
 
 [deep_analyzer_tool]
-analyzer_model_ids = ["gemini-2.5-pro"]
-summarizer_model_id = "gemini-2.5-pro"
+#analyzer_model_ids = ["gemini-2.5-pro"]
+#summarizer_model_id = "gemini-2.5-pro"
+analyzer_model_ids = ["qwen-plus-latest"]
+summarizer_model_id = "qwen-plus-latest"
 
 # Agent configs
 [agent]
@@ -66,7 +68,8 @@ model_id = "ali_qwen2.5-32b-instruct"
 #model_id = "gpt-4.1"
 name = "general_agent"
 description = "A general agent that can handle various tasks."
-max_steps = 20
+#max_steps = 20
+max_steps = 30
 template_path = "src/agent/general_agent/prompts/general_agent.yaml"
 tools = ["python_interpreter"]
 mcp_tools = ["get_weather"]
@@ -78,7 +81,8 @@ model_id = "ali_qwen2.5-32b-instruct"
 #model_id = "gpt-4.1"
 name = "planning_agent"
 description = "A planning agent that can plan the steps to complete the task."
-max_steps = 20
+#max_steps = 20
+max_steps = 30
 template_path = "src/agent/planning_agent/prompts/planning_agent.yaml"
 tools = ["planning"]
 managed_agents = ["deep_analyzer_agent", "browser_use_agent", "deep_researcher_agent"]

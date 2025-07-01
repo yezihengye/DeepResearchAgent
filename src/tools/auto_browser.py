@@ -69,7 +69,7 @@ class AutoBrowserUseTool(AsyncTool):
 
         model_id = self.browser_tool_config.model_id
 
-        assert model_id in ['gpt-4.1'], f"Model should be in [gpt-4.1, ], but got {model_id}. Please check your config file."
+        # assert model_id in ['gpt-4.1'], f"Model should be in [gpt-4.1, ], but got {model_id}. Please check your config file."
 
         if "langchain" not in model_id:
             model_id = f"langchain-{model_id}"
