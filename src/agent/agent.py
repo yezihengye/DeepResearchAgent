@@ -17,17 +17,17 @@ async def create_agent():
         adapter=AsyncToolAdapter()
     )
     mcp_tools = await mcp_adapt.tools()
-    
+
     if config.agent.use_hierarchical_agent:
         planning_agent_config = getattr(config.agent, "planning_agent_config")
-        
+
         sub_agents_ids = planning_agent_config.managed_agents
         sub_agents = []
         for sub_agent_id in sub_agents_ids:
             if sub_agent_id not in REGISTED_AGENTS:
                 raise ValueError(f"Agent ID '{sub_agent_id}' is not registered.")
             sub_agent_config = getattr(config.agent, f"{sub_agent_id}_config")
-            
+
             tool_ids = sub_agent_config.tools
             tools = []
             for tool_id in tool_ids:
@@ -40,7 +40,7 @@ async def create_agent():
                 if name not in mcp_tools:
                     raise ValueError(f"MCP tool '{name}' is not available.")
                 tools.append(mcp_tools[name])
-                
+
             sub_agent = REGISTED_AGENTS[sub_agent_id](
                 config=sub_agent_config,
                 model=model_manager.registed_models[sub_agent_config.model_id],
@@ -50,11 +50,11 @@ async def create_agent():
                 description=sub_agent_config.description,
                 provide_run_summary=True,
             )
-            
+
             sub_agents.append(sub_agent)
 
         sub_agent_tools = [make_tool_instance(agent) for agent in sub_agents]
-        
+
         tool_ids = planning_agent_config.tools
         tools = []
         for tool_id in tool_ids:
@@ -78,10 +78,11 @@ async def create_agent():
             description=planning_agent_config.description,
             name=planning_agent_config.name,
             provide_run_summary=True,
+            # return_full_result=True,
         )
-        
+
         return agent
-    
+
     else:
         general_agent_config = getattr(config.agent, "general_agent_config")
         tools = []
@@ -96,7 +97,7 @@ async def create_agent():
             if name not in mcp_tools:
                 raise ValueError(f"MCP tool '{name}' is not available.")
             tools.append(mcp_tools[name])
-            
+
         agent = REGISTED_AGENTS["general_agent"](
             config=general_agent_config,
             model=model_manager.registed_models[general_agent_config.model_id],
@@ -106,5 +107,5 @@ async def create_agent():
             description=general_agent_config.description,
             provide_run_summary=True,
         )
-        
+
         return agent

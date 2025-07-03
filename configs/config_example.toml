@@ -23,9 +23,9 @@ fetch_content = false
 max_length = 50000
 
 [deep_researcher_tool]
-#model_id = "ali_qwen2.5-32b-instruct"
+model_id = "ali_qwen2.5-32b-instruct"
 #model_id = "qwen2.5-32b-instruct"
-model_id = "gpt-4.1-mini"
+#model_id = "gpt-4.1-mini"
 #model_id = "gpt-4.1"
 max_depth = 2
 max_insights = 20
@@ -55,6 +55,9 @@ password = "xxxx"
 #summarizer_model_id = "gemini-2.5-pro"
 analyzer_model_ids = ["qwen-plus-latest"]
 summarizer_model_id = "qwen-plus-latest"
+
+#analyzer_model_ids = ["ali_qwen2.5-32b-instruct"]
+#summarizer_model_id = "ali_qwen2.5-32b-instruct"
 
 # Agent configs
 [agent]

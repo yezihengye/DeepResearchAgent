@@ -24,7 +24,7 @@ class PlanningTool(AsyncTool):
         "type": "object",
         "properties": {
             "action": {
-                "description": "The action to execute. Available actions: create, update, list, get, set_active, mark_step, delete.",
+                "description": "The action to execute. Available actions: create, update, list, get, set_active, mark_step, delete.Remember to differentiate between 'update' the entire plan when updating,and 'mark_step' to change the completion status of the original plan steps",
                 "enum": [
                     "create",
                     "update",

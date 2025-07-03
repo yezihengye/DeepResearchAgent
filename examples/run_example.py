@@ -31,7 +31,8 @@ async def main():
     # Run example
     # task = "Use deep_researcher_agent to search the latest papers on the topic of 'AI Agent' and then summarize it."
     # task = "使用deep_researcher_agent搜索近期江苏足球联赛的新闻，简单总结一下火热的原因。"
-    task = "使用deep_researcher_agent搜索近期上海螺纹钢价格相关内容，并简单做出分析报告。"
+    task = "使用deep_researcher_agent搜索近期上海螺纹钢价格相关内容，并做出分析总结报告。"
+    # task = "鸡兔同笼问题解答，35个头，94个脚，求鸡和兔的个数"
     res = await agent.run(task)
     logger.info(f"Result: {res}")
 

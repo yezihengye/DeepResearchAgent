@@ -584,6 +584,7 @@ class DeepResearcherTool(AsyncTool):
         # logger.info(f"总结query {query}.参考资料{reference_materials}")
         # model = model_manager.registed_models['gpt-4.1-mini']
         model = model_manager.registed_models['qwen-plus-latest']
+        # model = model_manager.registed_models['ali_qwen2.5-32b-instruct']
 
         messages = [
             {"role": "user", "content": query}
