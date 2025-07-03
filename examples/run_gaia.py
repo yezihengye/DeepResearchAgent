@@ -42,6 +42,10 @@ def filter_answers(answers_file):
         prediction = row['prediction']
         truth = row['true_answer']
 
+        # If the prediction is "Unable to determine", we set it to None
+        if str(prediction) == "Unable to determine":
+            prediction = None
+
         # Processing the test dataset that not contains the true answer
         if truth == "?":
             if prediction is not None:
@@ -86,22 +90,22 @@ def get_tasks_to_run(answers_file, dataset) -> List[dict]:
 
 async def answer_single_question(example, answers_file):
 
-    agent = await create_agent()
-
-    logger.info(f"Task Id: {example['task_id']}, Final Answer: {example['true_answer']}")
-
-    augmented_question = example["question"]
-
-    if example["file_name"]:
-
-        prompt_use_files = "\n\nTo solve the task above, you will have to use these attached files:\n"
-        file_description = f" - Attached file: {example['file_name']}"
-        prompt_use_files += file_description
-
-        augmented_question += prompt_use_files
-
-    start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
+        agent = await create_agent()
+
+        logger.info(f"Task Id: {example['task_id']}, Final Answer: {example['true_answer']}")
+
+        augmented_question = example["question"]
+
+        if example["file_name"]:
+            prompt_use_files = "\n\nTo solve the task above, you will have to use these attached files:\n"
+            file_description = f" - Attached file: {example['file_name']}"
+            prompt_use_files += file_description
+
+            augmented_question += prompt_use_files
+
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         # Run agent 🚀
         final_result = await agent.run(task=augmented_question)
 
@@ -170,16 +174,23 @@ async def main():
 
     # Load answers
     tasks_to_run = get_tasks_to_run(config.save_path, dataset)
-    tasks_to_run = [task for task in tasks_to_run if task["task"] == "1"]
+    tasks_to_run = [task for task in tasks_to_run if task["task"] == "2"]
 
     logger.info(f"Loaded {len(tasks_to_run)} tasks to run.")
 
-    # Run tasks
-    batch_size = getattr(config, "concurrency", 4)
-    for i in range(0, len(tasks_to_run), batch_size):
-        batch = tasks_to_run[i:min(i + batch_size, len(tasks_to_run))]
-        await asyncio.gather(*[answer_single_question(task, config.save_path) for task in batch])
-        logger.info(f"Batch {i // batch_size + 1} done.")
+    # # await answer_single_question(tasks_to_run[5], config.save_path)
+    # tasks_to_run = tasks_to_run[4:]
+    #
+    # # Run tasks
+    # batch_size = getattr(config, "concurrency", 4)
+    # for i in range(0, len(tasks_to_run), batch_size):
+    #     batch = tasks_to_run[i:min(i + batch_size, len(tasks_to_run))]
+    #     await asyncio.gather(*[answer_single_question(task, config.save_path) for task in batch])
+    #     logger.info(f"Batch {i // batch_size + 1} done.")
+
+    for task in tasks_to_run[2:]:
+        await answer_single_question(task, config.save_path)
+        logger.info(f"Task {task['task_id']} done.")
 
 if __name__ == '__main__':
     asyncio.run(main())
